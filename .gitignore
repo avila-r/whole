@@ -1,0 +1,10 @@
+bin/pb_data/
+bin/data/
+pb_data/
+data/
+
+.env
+
+report.json
+coverage.out
+vendor/
