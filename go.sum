@@ -23,6 +23,8 @@ github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3d
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/avila-r/env v1.0.1 h1:04vh17o4rfIthFc6Mec5eo97TzdXNMwJZ5tI7dPcZnw=
 github.com/avila-r/env v1.0.1/go.mod h1:aDfMbKVMx5S2+zFcm0FsPwTAhzBG+6nNaAe20oYa6PQ=
+github.com/avila-r/env v1.1.0 h1:9NkCazBQRU1mqo9pC/4BDoPsj8tYbpX92McBFpyhgrk=
+github.com/avila-r/env v1.1.0/go.mod h1:aDfMbKVMx5S2+zFcm0FsPwTAhzBG+6nNaAe20oYa6PQ=
 github.com/aws/aws-sdk-go v1.55.5 h1:KKUZBfBoyqy5d3swXyiC7Q76ic40rYcbqH7qjh59kzU=
 github.com/aws/aws-sdk-go v1.55.5/go.mod h1:eRwEWoyTWFMVYVQzKMNHWP5/RV4xIUGMQfXQHfHkpNU=
 github.com/aws/aws-sdk-go-v2 v1.32.7 h1:ky5o35oENWi0JYWUZkB7WYvVPP+bcRF5/Iq7JWSb5Rw=

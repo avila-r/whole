@@ -5,8 +5,7 @@ go 1.23
 toolchain go1.23.4
 
 require (
-	github.com/avila-r/env v1.0.1
-	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
+	github.com/avila-r/env v1.1.0
 	github.com/pocketbase/pocketbase v0.23.12
 )
 
