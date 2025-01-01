@@ -3,8 +3,6 @@ package app
 import (
 	"log"
 
-	"github.com/joeshaw/envdecode"
-
 	"github.com/avila-r/env"
 )
 
@@ -18,12 +16,12 @@ type envs struct {
 }
 
 var Config = func() *envs {
-	env.Load(RootPath)
+	env.Load(RootPath) // Optional error handling
 
-	env := envs{}
-	if err := envdecode.StrictDecode(&env); err != nil {
+	envs := envs{}
+	if err := env.Decode(&envs); err != nil {
 		log.Fatalf("failed to decode app environments - %v", err.Error())
 	}
 
-	return &env
+	return &envs
 }()
