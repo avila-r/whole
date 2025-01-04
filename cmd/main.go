@@ -4,6 +4,8 @@ import (
 	"log"
 
 	app "github.com/avila-r/whole"
+
+	_ "github.com/avila-r/whole/migrations"
 )
 
 func main() {
