@@ -1,3 +1,17 @@
+ifeq ($(strip $(PROFILE)),)
+	DOCKER_COMPOSE_FILE := compose.yml
+	ENV_FILE := .env
+else
+	DOCKER_COMPOSE_FILE := compose.$(PROFILE).yml
+	ENV_FILE := .env.$(PROFILE)
+endif
+
+ifneq ($(wildcard $(ENV_FILE)),)
+	ENV_FILE_OPTION := --env-file $(ENV_FILE)
+else
+	ENV_FILE_OPTION :=
+endif
+
 APP=whole
 APP_EXECUTABLE="./bin/$(APP)"
 MAIN_FILE="./cmd/main.go"
@@ -79,14 +93,23 @@ all: ## runs setup, quality checks and builds
 	@make test
 	@make build
 
-clean: ## cleans binary, generated files, and dependencies
+clean: ## cleans generated files, and dependencies
 	@echo "${PREFIX} ${GREEN}Cleaning generated files, coverage reports, and vendor directory...${RESET}"
+	@go clean
+	@rm -f coverage.out
+	@rm -f report.json
+	@rm -rf vendor/
+	@echo "${PREFIX} ${GREEN}Clean completed!${RESET}"
+
+kill: ## kills data, binary, generated files, and dependencies
+	@echo "${PREFIX} ${GREEN}Cleaning all data, generated files, coverage reports, and vendor directory...${RESET}"
 	@go clean
 	@rm -rf bin/
 	@rm -f coverage.out
 	@rm -f report.json
 	@rm -rf vendor/
-	@echo "${PREFIX} ${GREEN}Clean completed!${RESET}"
+	@rm -rf data/
+	@echo "${PREFIX} ${GREEN}Kill completed!${RESET}"
 
 .PHONY: help
 ## Help
@@ -100,3 +123,51 @@ help: ## Show this help.
 		if (/^[a-zA-Z_-]+:.*?##.*$$/) {printf "    ${YELLOW}%-20s${GREEN}%s${RESET}\n", $$1, $$2} \
 		else if (/^## .*$$/) {printf "  ${CYAN}%s${RESET}\n", substr($$1,4)} \
 		}' $(MAKEFILE_LIST)
+
+# Target: Starts all containers defined in the Docker Compose file.
+up:
+	@echo "Starting $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) up -d
+	@echo "$(DOCKER_COMPOSE_FILE) started successfully!"
+
+# Target: Stop the containers without removing them, their volumes or their images.
+stop:
+	@echo "Stopping $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) stop
+	@echo "$(DOCKER_COMPOSE_FILE) stopped!"
+
+# Target: Removes the containers without removing their volumes or images.
+down:
+	@echo "Removing $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) down
+	@echo "$(DOCKER_COMPOSE_FILE) removed!"
+
+# Target: Completely removes containers, volumes, and images.
+clear:
+	@echo "Removing containers, volumes, and images associated with $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) down -v --rmi all
+	@echo "All containers, volumes, and images removed!"
+
+# Target: Restarts containers without removing their volumes or images.
+refresh:
+	@echo "Refreshing $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) down
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) up --build --force-recreate -d
+	@echo "$(DOCKER_COMPOSE_FILE) refreshed!"
+
+# Target: Stops and removes all containers, networks, and volumes defined in the Docker Compose file.
+down-v:
+	@echo "Shutting down all containers, networks, and volumes defined in $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) down -v
+	@echo "All containers, networks, and volumes have been removed."
+
+# Target: Stops all containers and removes images built by the Docker Compose file.
+down-i:
+	@echo "Shutting down all containers and removing all images built by $(DOCKER_COMPOSE_FILE)..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) down --rmi all
+	@echo "All containers have been stopped, and images removed."
+
+# Target: Displays logs of services defined in the Docker Compose file in real-time.
+logs:
+	@echo "Displaying logs for services defined in $(DOCKER_COMPOSE_FILE) in real-time..."
+	@docker compose $(ENV_FILE_OPTION) -f $(DOCKER_COMPOSE_FILE) logs -f
